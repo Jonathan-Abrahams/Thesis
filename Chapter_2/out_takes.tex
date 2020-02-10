@@ -1,0 +1,23 @@
+Based on these predictions, I first ran the pipeline on the data which had not been trimmed for adapters to verify my predictions were approximately correct. The prediction stated that when all sequences containing juxtaposed sequences were graphed, this would amount to roughly 10000 sequences: reads with a known adapter sequence (8000);reads with a gap between 50-250bp at the junction site( the chimeras with degraded adapters) (2000);a small number of reads with a repeat at the junction and a small number of uncategorised reads which may be SV formed from non-homologous recombination or an unknown technical artefact. As it was expected that any true structural variation would be flanked by repeat sequences , these were the sequences most likely to be true SV.
+
+
+Put in real terms, using the UK54 clone 4 sample, at 75\% homology match 8643 chimeras were detected and therefore it is likely 2074 chimeras (0.2*(8643+(0.2*8643))) remained due to the native ~20\% nanopore sequencing error rate degrading the adapter sequence.
+
+%This highlights how bad the pipelien is. Probably dont do this. Just skip right to the final result which actuaolly is very tight.
+
+\subsubsection{Testing the rate of errors in reads}
+
+
+%Here just put a graph with everything colour coded
+{Basketball graph before chimera ting. Reads with adapters at the middle are highlighted one colour}
+
+
+We found X chimeras with adapters, Y chimeras which likely had adapters,Z sequences which appeared to be structural variations (flanked by IS) and Q uncategoriesed reads, that may have been SVs that occurred without homologous flanks. 
+
+
+The reads which contained the most reliable signal of CNVs, those with repeat regions at the junction, were therefore selected and the pipeline tweaked to ignore other reads (the majority of which involved simply running porechop). The pipeline was rerun. The exact numbers of how many reads with adapters etc are likely to change, due to differences in DNA sequence matching algoirthms used by Porechop and my own calculations. 
+
+\subsubsection{Do chimeras have a characteristic motif in electric signal?}
+%https://www.biorxiv.org/content/10.1101/308262v1.full.pdf
+ In their recent paper, X et al associated chimeric reads with a charecteristic spike in electronic signal right after the first half of the chimera is sequenced during Nanopore sequencing. I investigated how the different categories of reads identified in my analysis were associated with this `spike' motif. This analysis formed a final check to ensure that, in agreement with all peer-reviewed literature on the subject, the final filtered set of reads produced by this analysis were ,beyond reasonable doubt, genuinely structural variants.
+

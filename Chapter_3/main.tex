@@ -16,8 +16,24 @@
 \maketitle
 
 \section{Introduction}
-The most frequently used method to create a genotype for the analysis of SNVs in GWAS is to split each genome up into overlapping sequence of a specific size (or range of sizes), such sequences are known as 'K-mers' as each sequence is of 'K' size.
 
+%People have done GWAS on TB before. They mostly stick to SNPs and short indels.
+
+%General GWAS on TB for AR:
+%https://www.nature.com/articles/s41467-019-10110-6
+%https://www.nature.com/articles/s41598-019-51812-7
+%Studies somewhat taking into account genomic variation outside of SNPs:
+
+
+%Studies that directly studied gene presence or absence and their association with resistance:
+
+%Identified only one genomic deletion that was associated. No relationship to our data.
+
+%https://www.nature.com/articles/s41588-017-0029-0#Sec2
+
+%We used a subsection of this data:
+
+%https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4579482/#sec1
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=1.7]{universe}
@@ -25,15 +41,11 @@ The most frequently used method to create a genotype for the analysis of SNVs in
 \label{fig:universe}
 \end{figure}
 
-\section{Methods}
-``I always thought something was fundamentally wrong with the universe'' \citep{adams1995hitchhiker}
 \section{Results}
 
-\newcommand{\quickwordcount}[1]{%
-  \immediate\write18{texcount -1 -sum -merge -q #1.tex output.bbl > #1-words.sum }%
-  \input{#1-words.sum} words%
-}
 There is a plethora of tools to undertake GWAS in both eukaryotic and prokaryotic organisms, most tools are based on detecting SNVs whilst some also analyse the presence or absence of whole genes. However there has been, to our knowledge, no capacity to study structural variants beyond deletions using a GWAS framework. We therefore developed a suite of methods to process SV data into a format that is compatible with GWAS tools and then tested them on a dataset.
+
+
 
 
 
@@ -48,7 +60,6 @@ As shown previously, read depth can be a reliable proxy for copy number. Therefo
 
 In order to use SVs as the ‘genotype’ in the ‘genotype-phenotype’ link that GWAS aims to establish, it was first necessary to prove the concept in a proof of concept experiment. In a standard GWAS experiment, phenotypes (such as `MIC $\leq$ 128ug' or `Can metabalise lactose') are often used in a binary format-the outcomes are logged as a zero (0) or one (1). The easiest genotype-phenotype link to discover using GWAS is the 'perfect link' in which a single genotype wholly and consistently is associated with a specific phenotype. To undertake a proof of concept experiment a 'perfect link' phenotype was emulated: the strains containing duplications in Network 1 were given the phenotype of 1 and all other strains were given the phenotype of 0 in this model phenotype. The `genotype' used was the copy number predictions for each gene in each strain.
 
-%The mash data is crap. Likely BPP is in the mix? or perhaps clade 1 vs clade 2 which is unavoidable
 
 
 
@@ -56,84 +67,62 @@ In order to use SVs as the ‘genotype’ in the ‘genotype-phenotype’ link t
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{just core.png}
-\caption{Manhatten plot demonstrating a genotype-phenotype link can be established using Duplications and a 'perfect' phenotype. Red line indicates X and blue line indicates Y. }
+\caption{Manhatten plot demonstrating a genotype-phenotype link can be established using Duplications and a 'perfect' phenotype. Red line indicates Mean start and end of the duplication in Network 1 and blue line indicates the core of the network. }
 \label{fig:Manhatten_1}
 \end{figure}
 
 
 
 
-Running a GWAS with the emulated 'perfect link' genotype-phenotype data resulted in the duplicated genes being significantly associated with the 'perfect link' phenotype (Figure \ref{fig:Manhatten_1}). Therefore It could be proved that duplications,in principle, could be used as a 'genotype' in GWAS.
+Running a GWAS with the emulated 'perfect link' genotype-phenotype data resulted in the duplicated genes being significantly associated with the 'perfect link' phenotype (Figure \ref{fig:Manhatten_1}). Therefore It could be proved that duplications,in principle, could be used as a 'genotype' in GWAS. In this contrived experiment,however, there is nothing but the correct signal and therefore this represents an unrealistic scenario. With less contrived phenotypes, therefore, such warnings would likely be less frequent.
 
 \clearpage
-
-%We therefore  used kmers .
-
-\subsection{K-mer based approach as a genotype for GWAS}
-
-Acknowledging the co-existence of all mutation types is imperative in understanding the trajectory evolution is undergoing as neutral mutations can often 'hitch-hike' on mutations which are under positive selection. Therefore analysing a genotype-phenotype link one mutation type at a time may give erroneous results. Our initial analysis of a presence/absence matrix of duplications,whilst functional in a test scenario, would be therefore flawed for use in practise. We therefore sought a rigorous method to provide a holistic genotype, of which all known mutations were inputted, for GWAS in order for a robust genotype-phenotype link to be hypothesised.
-
-Whilst using K-mers is the most ubiquitous strategy to define a genotype,this strategy does however poses a variety of problems for the analysis of SVs in bacteria. 
-
-%How kmers work and why they are useful
-\subsubsection{K-mer based problems}
-
-The strength and ubiquitous use of K-mers in bioinformatics (refs) stems from the ease K-mers bring to the challenging task of comparing two or more sequences. A K-mer is considered a match to a target sequence only if it is an exact match, therefore avoiding the array of complications stemming from approximate matching of larger sequences. The sensitivity and specificity of this 'exact match' property of K-mers is dependent on the length of the kmer and of the variability of the target sequence in addition to other influences. For example, longer K-kmers are more specific bus less sensitive. 
-
-
-
-%Point 1: Structural variations
-For most GWAS applications, the K-mer length is not a critical variable to the analysis as increasing or decreasing the kmer size produces the expected linear effect on sensitivity and specificity. However, the length of the repeats involved in recombination-mediated SVs often exceeds the length of K-mers used in GWAS- such mutations are rendered `invisible' to K-mer based GWAS analysis. There are a variety of different solutions to this problem, each with advantages and disadvantages.
-
-A seemingly clear solution to study SVs with K-mers would be to increase the K-mer length to exceed the length of the repeats of interest which often exceed 1kb in length. The length of K-mers is a balance between sensitivity and specificity,however, and therefore  long (100bp+) K-mers may lead to extremely high specificity (Figure \ref{fig:Sens_spec}). In the highly clonal bacterium B. pertussis, which most often contain 20-300 SNVs in the 4.1Mb genome, very long K-mers were still informative, but such K-mers in other species would be too specific. This strategy was therefore not favourable.
-%Perhaps here, include a graph with real data showing this effect: how does kmer length influence interspecies and intra species resolution of isolates?. However, alot of effort for a mionor point.
-
-Another strategy is to exclude repeat regions, meaning the `pre-repeat' and `post-repeat' sequence are adjacent and thus novel junctions can be captured by regular length K-mers. However, there is evidence that specific IS alleles have different regulatory effects on adjacent genes and thus the exclusion of these sequences. Both strategies were investigated here in order to elucidate the most effective strategy with reference to B.pertussis and more generically, to the bacterial kingdom as a whole.
-
-
-
 \begin{figure}[h!]
 \centering
-\includegraphics[scale=1.7]{universe}
-\caption{Sensitivity and specifcity trade off for K-mer size in TB and in B.pertussis.}
-\label{fig:Sens_spec}
+\includegraphics[width=\textwidth]{Chapter_3/Rplot15.png}
+\caption{Manhatten plot demonstrating a genotype-phenotype link can be established using duplications,deletions and SNPs and a 'perfect' phenotype.}
+\label{fig:Manhatten_1}
 \end{figure}
+\clearpage
+
+We reran the analysis with the other duplications,deletions and SNPs in the data included. The association still persisted.
+\clearpage
+
+%BP is highly highly clonal.
+
+%Whats nice about duplications is that they have practically no phylogenetic signal (See chapter 2 ASR).
+
+%This means they are independent to the highly clonal population structure of BP, potentially posing them as a perfect trait to investigate using gwas.
+
+%We investigated how robust they were to the underlying population structure (somehow...)
+	%Population structure is the the tree. Mutate the tree to
+
+%We could demonstrate that this was independent of underlying structure but we wanted to see how regular SNPs would fare.
+
+%We therefore showed there was extremely high linkage between SNPs in pertussis with an LD plot
+
+%We then did a GWAS using faked phenotypes for 2 things: FIrstly we did the chinese resistance ting, then we chose something else relevant.
 
 
-\subsubsection{Ultra-long K-mers overcome the problem}
+%We then switched to K-mers. We wanted to study gene order in combination with all other effects, using a unified system. If duplications were easily solved like this, it would also be useful.
+\subsection{Using gene order as a genotype for GWAS}
 
-%Ultra long kmers overcome the problem that kmers are smaller than repeats, however this may not be so applicable to more diverse bacterium outside of B.pertussis.
+We wanted to see if gene order, as specified in resolved genomes, could be used as genetic material for GWAS.
 
-\subsubsection{Excluding repeat regions overcome the problem}
-
-%Excluding repeat regions was the best solution. However rearangements.
-
-
+Bp is fantastic for this. Gene order changes frequently, over short evolutionary timescales.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[scale=0.6]{Kmer_dupe.png}
-\caption{We can identify the boundry of a dupe using kmers}
-\label{fig:kmer_dupe1}
-\end{figure}
-
-\begin{figure}[h!]
-\centering
-
 \includegraphics[width=\textwidth{}]{PFGE_tree.png}
 \caption{PFGE types are homoplasic}
 \label{fig:PFGE_tree}
 \end{figure}
 
+We therefore depleted the genome of repeat elements in order to produce informative kmers of reasonable length.
 
-%This figure will be a manhatten plot of this
-
-
-
+It was also possible to produce ultra long kmers, however, whilst useful in pertussis, their use outside the species, with more diverse genomes, would be limited. The more generic methodology, of depleting repeat regions, was pursued.
 
 
 
 
-%\bibliographystyle{plain}
-%\bibliography{references}
 \end{document}

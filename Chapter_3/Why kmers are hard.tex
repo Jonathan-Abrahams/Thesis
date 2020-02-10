@@ -1,0 +1,29 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\setlength{\parskip}{1em}
+\usepackage{subcaption}
+
+
+\title{Why kmers are hard to do}
+\author{Jonathan S. Abrahams }
+\date{October 2019}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\begin{document}
+
+
+\maketitle
+
+\section{K-mers are complicated}
+K-mers are easy for SNPs and deletions- the absence of a k-mer in an isolate indicates the lack of that feature.
+
+For duplications, K-mers are much harder. The initial analysis, asking if there are kmers which are present in some sample at y copies but are present in other samples at 2y or 3y+ copies, is easy in closed genomes. However, we currently cannot resolve duplications outside of manual resolution. We therefore would have to use raw read data and identify kmers with different abundunces (e.g 100x frequency compared to 200x frequency) using stats. This is less of a `shoehorning' excersise and more creating a new pipeline.
+\section{Benefits of kmers}
+
+Using kmers in this way,however, would be highly beneficial. Getting rid of the need for a reference genome would be beneficial for  organisms with large pangenomes (such as Shigella) can be used with much more validity.
+
+It would also be useful for a unified framework to investigate mutations. Kmer abundunce can be easily combined with kmer presence or absence to study SNPs, deletions and duplications using the same dataset, analysed in subtly different ways.
+
+\end{document}

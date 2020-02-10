@@ -1,0 +1,15 @@
+
+\subsubsection{Seeking further evidence in resolved/long read genomes}
+
+These isolates were closed genomes generated from long read data on the PacBio platform. It was not plausable that any single PacBio read could span the entire tandem duplication, which would be upto 600kb (check this for these specific isolates), (average read length for this chemistry is 3kb (??)). It was possible,however, that some reads  in a strain with a duplication would span the end of one copy of the duplication and the start of the second copy of the duplication- the junction sequence. The observation of multiple reads containing junction sequences,combined with high read depth in this region, was high quality evidence of a duplication. 
+
+Two simple BLAST searches were undertaken to investigate this: 1kb at the start of the duplication (excluding IS481) and 1kb at the end of the duplication (excluding IS481). Any read that had both regions present (in 100\% of the length but at any nucleotide identity) was either 300kb long (impossible for such reads) or contained a junction sequence.
+
+{Barplot of Just_beginning,Just_middle and Just_end}
+
+We then examined three of these reads individually to verify that they indeed contained the junction sequence. An example is shown below.
+
+
+{blast graphs of 1 read}
+
+This result provides the foundation of the work described and discussed in Chapter 2.
